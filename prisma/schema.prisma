@@ -17,11 +17,19 @@ model User {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   favoriteIds    String[]  @db.ObjectId
+  passions       String[]  // Already fine as an array of strings
+  description    String?
+  age            Int?
+  travelerType   String[]  // Already fine as an array of strings
+  nationality    Json?     // Change to Json to handle objects
+  languages      Json[]    // Change to Json array to handle objects
 
-  accounts     Account[]
-  listings     Listing[]
-  reservations Reservation[]
+  accounts       Account[]
+  listings       Listing[]
+  reservations   Reservation[]
 }
+
+
 
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId

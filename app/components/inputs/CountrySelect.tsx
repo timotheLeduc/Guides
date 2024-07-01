@@ -1,9 +1,9 @@
 "use client"
 
-import useCountries from "@/app/hooks/useCountries";
 import { FC } from "react";
-
+import useCountries from "@/app/hooks/useCountries";
 import Select from 'react-select';
+import Flag from 'react-world-flags';
 
 export type CountrySelectValue = {
     flag: string;
@@ -19,7 +19,6 @@ interface CountrySelectProps {
 }
 
 const CountrySelect: FC<CountrySelectProps> = ({ value, onChange }) => {
-
     const { getAll } = useCountries();
 
     return (
@@ -30,9 +29,9 @@ const CountrySelect: FC<CountrySelectProps> = ({ value, onChange }) => {
                 options={getAll()}
                 value={value}
                 onChange={(value) => onChange(value as CountrySelectValue)}
-                formatOptionLabel={(option: any) => (
+                formatOptionLabel={(option: CountrySelectValue) => (
                     <div className="flex items-center gap-3">
-                        <div>{option.flag}</div>
+                        <Flag code={option.flag} alt={option.label} className="w-5 h-5" />
                         <div>
                             {option.label},
                             <span className="text-neutral-500 ml-1">{option.region}</span>
@@ -55,7 +54,7 @@ const CountrySelect: FC<CountrySelectProps> = ({ value, onChange }) => {
                 })}
             />
         </div>
-    )
+    );
 }
 
-export default CountrySelect
+export default CountrySelect;
