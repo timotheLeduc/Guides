@@ -6,6 +6,8 @@ import Heading from "@/app/components/Heading";
 import Container from "@/app/components/Container";
 import { FaUser, FaEnvelope, FaBirthdayCake, FaFlag, FaLanguage, FaInfoCircle, FaUserTag, FaHeart, FaEdit, FaSave, FaTimes } from 'react-icons/fa';
 import axios from 'axios';
+import useEditInfosModal from '@/app/hooks/useEditInfosModal';
+import EditInfosModal from '@/app/components/modals/EditInfosModal';
 
 interface AccountClientProps {
     currentUser: SafeUser;
@@ -35,9 +37,17 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
         passions: currentUser.passions.join(', ') || ''
     });
 
+    const editInfosModal = useEditInfosModal();
+
     const handleEditClick = (field: keyof FormData) => {
-        setIsEditing(prevState => ({ ...prevState, [field]: true }));
+        if (['nationality', 'languages', 'travelerType', 'passions'].includes(field)) {
+            editInfosModal.onOpen(field);
+        } else {
+            setIsEditing(prevState => ({ ...prevState, [field]: true }));
+        }
     };
+    
+    
 
     const handleCancelClick = (field: keyof FormData) => {
         setIsEditing(prevState => ({ ...prevState, [field]: false }));
@@ -115,6 +125,7 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
                 {renderField('travelerType', 'Traveler Type', <FaUserTag className="text-2xl mb-2" />)}
                 {renderField('passions', 'Passions', <FaHeart className="text-2xl mb-2" />)}
             </div>
+            <EditInfosModal currentUser={currentUser} onClose={editInfosModal.onClose} />
         </Container>
     );
 };

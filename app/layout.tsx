@@ -13,6 +13,7 @@ import LoginModal from './components/modals/LoginModal';
 import RentModal from './components/modals/RentModal';
 import SearchModal from './components/modals/SearchModal';
 import InfosModal from './components/modals/InfosModal';
+import EditInfosModal from './components/modals/EditInfosModal';
 
 
 export const metadata = {

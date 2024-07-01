@@ -5,12 +5,12 @@ import Heading from "../Heading";
 import { FaHiking, FaPlane, FaHotel, FaGlobe, FaMoneyBill, FaCouch, FaLeaf } from "react-icons/fa";
 
 const travelerTypes = [
-    { value: "adventurous", label: "Adventurous", icon: FaHiking },
-    { value: "relaxed", label: "Relaxed", icon: FaCouch },
-    { value: "budget", label: "Budget", icon: FaMoneyBill },
-    { value: "luxury", label: "Luxury", icon: FaHotel },
-    { value: "cultural", label: "Cultural", icon: FaGlobe },
-    { value: "eco", label: "Eco", icon: FaLeaf },
+    { value: "Adventurous", label: "Adventurous", icon: FaHiking },
+    { value: "Relaxed", label: "Relaxed", icon: FaCouch },
+    { value: "Budget", label: "Budget", icon: FaMoneyBill },
+    { value: "Luxury", label: "Luxury", icon: FaHotel },
+    { value: "Cultural", label: "Cultural", icon: FaGlobe },
+    { value: "Eco", label: "Eco", icon: FaLeaf },
     // Add more options as needed
 ];
 
