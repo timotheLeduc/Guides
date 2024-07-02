@@ -14,6 +14,8 @@ import RentModal from './components/modals/RentModal';
 import SearchModal from './components/modals/SearchModal';
 import InfosModal from './components/modals/InfosModal';
 import EditInfosModal from './components/modals/EditInfosModal';
+import AuthContext from './context/AuthContext';
+
 
 
 export const metadata = {
@@ -37,6 +39,8 @@ export default async function RootLayout({ children, }: { children: React.ReactN
   return (
     <html lang="en">
       <body className={font.className}>
+        <AuthContext>
+          
         <ClientOnly>
           <ToastProvider />
           <RegisterModal />
@@ -49,6 +53,7 @@ export default async function RootLayout({ children, }: { children: React.ReactN
         <div className='pb-20 pt-28'>
           {children}
         </div>
+        </AuthContext>
       </body>
     </html>
   )

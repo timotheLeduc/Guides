@@ -7,5 +7,6 @@ export const config = {
         "/properties",
         "/favorites",
         "/account",
+        "/users"
     ]
 };

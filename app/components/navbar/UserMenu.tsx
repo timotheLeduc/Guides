@@ -90,6 +90,7 @@ const UserMenu: FC<UserMenuProps> = ({ currentUser }) => {
                                 <MenuItem onClick={() => router.push("/properties")} label='My properties' />
                                 <MenuItem onClick={() => onRent()} label='Airbnb my home' />
                                 <MenuItem onClick={() => router.push("/account")} label='Profile' />
+                                <MenuItem onClick={() => router.push("/users")} label='users' />
                                 
                                 <hr />
                                 <MenuItem onClick={() => signOut()} label='Logout' />
