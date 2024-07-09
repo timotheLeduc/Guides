@@ -10,6 +10,8 @@ import useOtherUser from "@/app/hooks/useOtherUser";
 
 
 import Avatar from "@/app/components/Avatar";
+import ProfileDrawer from './ProfileDrawer';
+import useActiveList from '@/app/hooks/useActiveList';
 
 
 interface HeaderProps {
@@ -21,24 +23,25 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ conversation }) => {
   const otherUser = useOtherUser(conversation);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { members } = useActiveList();
 
 
-//   const isActive = members.indexOf(otherUser?.email!) !== -1;
+  const isActive = members.indexOf(otherUser?.email!) !== -1;
   const statusText = useMemo(() => {
     if (conversation.isGroup) {
       return `${conversation.users.length} members`;
     }
 
-    return 'Active';
-  }, [conversation]);
+    return isActive ? 'Active' : 'Offline';
+  }, [conversation, isActive]);
 
   return (
   <>
-    {/* <ProfileDrawer 
+    <ProfileDrawer 
       data={conversation} 
       isOpen={drawerOpen} 
       onClose={() => setDrawerOpen(false)}
-    /> */}
+    />
     <div 
       className="
         bg-white 
@@ -69,7 +72,7 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
           <HiChevronLeft size={32} />
         </Link>
         
-          <Avatar src={otherUser.image} />
+          <Avatar src={otherUser.image} user={otherUser} />
         
         <div className="flex flex-col">
           <div>{conversation.name || otherUser.name}</div>

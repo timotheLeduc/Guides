@@ -15,6 +15,7 @@ import SearchModal from './components/modals/SearchModal';
 import InfosModal from './components/modals/InfosModal';
 import EditInfosModal from './components/modals/EditInfosModal';
 import AuthContext from './context/AuthContext';
+import ActiveStatus from './components/ActiveStatus';
 
 
 
@@ -43,6 +44,7 @@ export default async function RootLayout({ children, }: { children: React.ReactN
           
         <ClientOnly>
           <ToastProvider />
+          <ActiveStatus />
           <RegisterModal />
           <LoginModal />
           <InfosModal />

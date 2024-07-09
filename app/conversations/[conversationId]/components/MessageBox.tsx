@@ -6,9 +6,9 @@ import { useState } from "react";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import { FullMessageType } from "@/app/types";
-
+import ImageModal from "./ImageModal";
 import Avatar from "@/app/components/Avatar";
-// import ImageModal from "./ImageModal";
+
 
 interface MessageBoxProps {
   data: FullMessageType;
@@ -41,7 +41,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({
   return ( 
     <div className={container}>
       <div className={avatar}>
-        <Avatar src={data.sender.image} />
+        <Avatar src={data.sender.image} user={data.sender} />
       </div>
       <div className={body}>
         <div className="flex items-center gap-1">
@@ -53,7 +53,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({
           </div>
         </div>
         <div className={message}>
-          {/* <ImageModal src={data.image} isOpen={imageModalOpen} onClose={() => setImageModalOpen(false)} /> */}
+          <ImageModal src={data.image} isOpen={imageModalOpen} onClose={() => setImageModalOpen(false)} />
           {data.image ? (
             <Image
               alt="Image"

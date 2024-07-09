@@ -9,7 +9,7 @@ import clsx from "clsx";
 import { find, uniq } from 'lodash';
 
 import useConversation from "@/app/hooks/useConversation";
-// import { pusherClient } from "@/app/libs/pusher";
+import { pusherClient } from "@/app/libs/pusher";
 // import GroupChatModal from "@/app/components/modals/GroupChatModal";
 import ConversationBox from "./ConversationBox";
 import { FullConversationType } from "@/app/types";
@@ -20,8 +20,8 @@ interface ConversationListProps {
   title?: string;
 }
 
-const ConversationList: React.FC<ConversationListProps> = ({ 
-  initialItems, 
+const ConversationList: React.FC<ConversationListProps> = ({
+  initialItems,
   users
 }) => {
   const [items, setItems] = useState(initialItems);
@@ -41,7 +41,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
       return;
     }
 
-    // pusherClient.subscribe(pusherKey);
+    pusherClient.subscribe(pusherKey);
 
     const updateHandler = (conversation: FullConversationType) => {
       setItems((current) => current.map((currentConversation) => {
@@ -70,14 +70,26 @@ const ConversationList: React.FC<ConversationListProps> = ({
       setItems((current) => {
         return [...current.filter((convo) => convo.id !== conversation.id)]
       });
+      if(conversationId === conversation.id) {
+        router.push('/conversations')
+      }
     }
 
-   
+    pusherClient.bind('conversation:update', updateHandler)
+    pusherClient.bind('conversation:new', newHandler)
+    pusherClient.bind('conversation:remove', removeHandler)
+
+    return () => {
+      pusherClient.unsubscribe(pusherKey)
+      pusherClient.unbind('conversation:update', updateHandler)
+      pusherClient.unbind('conversation:new', newHandler)
+      pusherClient.unbind('conversation:remove', removeHandler)
+    }
   }, [pusherKey, router]);
 
   return (
     <>
-      
+
       <aside className={clsx(`
         fixed 
         inset-y-0 
@@ -95,8 +107,8 @@ const ConversationList: React.FC<ConversationListProps> = ({
             <div className="text-2xl font-bold text-neutral-800">
               Messages
             </div>
-            <div 
-              onClick={() => setIsModalOpen(true)} 
+            <div
+              onClick={() => setIsModalOpen(true)}
               className="
                 rounded-full 
                 p-2 
@@ -120,7 +132,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
         </div>
       </aside>
     </>
-   );
+  );
 }
- 
+
 export default ConversationList;
