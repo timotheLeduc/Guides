@@ -1,10 +1,8 @@
 'use client'
 
-
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import useRentModal from "@/app/hooks/useRentModal"
-
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 import Modal from "."
@@ -12,30 +10,33 @@ import Heading from "../Heading";
 import { categories } from "../navbar/Categories";
 import CategoryInput from "../inputs/CategoryInput";
 import CountrySelect from "../inputs/CountrySelect";
+import CitySelect from "../inputs/CitySelect";
 import dynamic from "next/dynamic";
 import Counter from "../inputs/Counter";
 import ImageUpload from "../inputs/ImageUpload";
 import Input from "../inputs";
+import Meetup from "../inputs/Meetup";
+import Inclusions from "../inputs/Inclusions";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
-
 enum STEPS {
-  CATEGORY = 0,
-  LOCATION = 1,
-  INFO = 2,
-  IMAGES = 3,
-  DESCRIPTION = 4,
-  PRICE = 5
+  TITLE_DESCRIPTION = 0,
+  CATEGORY = 1,
+  LOCATION = 2,
+  MEETUP_POINT = 3,
+  DETAILS = 4,
+  INCLUSIONS = 5,
+  IMAGES = 6
 }
 
 const RentModal = () => {
-
   const router = useRouter()
   const rentModal = useRentModal();
 
-  const [step, setStep] = useState(STEPS.CATEGORY);
+  const [step, setStep] = useState(STEPS.TITLE_DESCRIPTION);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [inclusions, setInclusions] = useState<string[]>([]);
 
   const {
     register,
@@ -46,23 +47,25 @@ const RentModal = () => {
     reset
   } = useForm<FieldValues>({
     defaultValues: {
+      title: "",
+      description: "",
       category: "",
       location: null,
-      guestCount: 1,
-      roomCount: 1,
-      bathroomCount: 1,
-      imageSrc: "",
+      meetingPoint: "",
       price: 1,
-      title: '',
-      description: ""
+      duration: 1,
+      groupSize: 1,
+      inclusions: [],	
+      imageSrc: "",
     }
   });
 
   const category = watch("category");
   const location = watch("location");
-  const guestCount = watch("guestCount");
-  const roomCount = watch("roomCount");
-  const bathroomCount = watch("bathroomCount");
+  const meetingPoint = watch("meetingPoint");
+  const price = watch("price");
+  const duration = watch("duration");
+  const groupSize = watch("groupSize");
   const imageSrc = watch("imageSrc");
 
   const Map = useMemo(() => dynamic(() => import("../Map"), {
@@ -86,7 +89,9 @@ const RentModal = () => {
   }
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    if (step !== STEPS.PRICE) {
+    data.inclusions = inclusions; // Include the inclusions in the form data
+
+    if (step !== STEPS.IMAGES) {
       return onNext();
     }
 
@@ -94,18 +99,15 @@ const RentModal = () => {
 
     axios.post("/api/listings", data)
       .then(() => {
-
         toast.success("Listing Created!")
         router.refresh();
         reset();
-        setStep(STEPS.CATEGORY);
+        setInclusions([]);
+        setStep(STEPS.TITLE_DESCRIPTION);
         rentModal.onClose();
-
       })
       .catch(() => {
-
         toast.error("Something went wrong!");
-
       })
       .finally(() => {
         setIsLoading(false);
@@ -113,7 +115,7 @@ const RentModal = () => {
   }
 
   const actionLabel = useMemo(() => {
-    if (step === STEPS.PRICE) {
+    if (step === STEPS.IMAGES) {
       return "Create"
     }
 
@@ -121,42 +123,74 @@ const RentModal = () => {
   }, [step]);
 
   const secondaryActionLabel = useMemo(() => {
-    if (step === STEPS.CATEGORY) return undefined;
+    if (step === STEPS.TITLE_DESCRIPTION) return undefined;
 
     return "Back";
   }, [step]);
 
-  // Step 1
+  // Step 1: Title and Description
   let bodyContent = (
     <div className="flex flex-col gap-8">
       <Heading
-        title="Which of these best describes your place?"
-        subtitle="Pick a category"
+        title="How would you describe your tour?"
+        subtitle="Short and sweet works best!"
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
-        {categories.map((item) => (
-          <div key={item.label} className="col-span-1">
-            <CategoryInput
-              onClick={(category) => setCustomValue('category', category)}
-              selected={category === item.label}
-              label={item.label}
-              icon={item.icon}
-            />
-          </div>
-        ))}
-      </div>
+      <Input
+        id="title"
+        label="Title"
+        placeholder="Enter the tour title"
+        disabled={isLoading}
+        register={register}
+        errors={errors}
+        required
+      />
+      <hr />
+      <Input
+        id="description"
+        label="Description"
+        placeholder="Enter a detailed description"
+        disabled={isLoading}
+        register={register}
+        errors={errors}
+        required
+        multiline // Set this to true for multi-line input
+      />
     </div>
-  )
+  );
 
-  // Step 2
+  // Step 2: Category
+  if (step === STEPS.CATEGORY) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Which of these best describes your tour?"
+          subtitle="Pick a category"
+        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
+          {categories.map((item) => (
+            <div key={item.label} className="col-span-1">
+              <CategoryInput
+                onClick={(category) => setCustomValue('category', category)}
+                selected={category === item.label}
+                label={item.label}
+                icon={item.icon}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  // Step 3: Location (city) and Meeting Point
   if (step === STEPS.LOCATION) {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="Where is your place lacocated?"
+          title="Which city is your tour located?"
           subtitle="Help guests find you!"
         />
-        <CountrySelect
+        <CitySelect
           value={location}
           onChange={(value) => setCustomValue("location", value)}
         />
@@ -165,101 +199,83 @@ const RentModal = () => {
     )
   }
 
-  // Step 3
-  if (step === STEPS.INFO) {
+  if (step === STEPS.MEETUP_POINT) {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="Share some basics about your place"
-          subtitle="What amenities do you have?"
+          title="Where is the meetup point?"
+          subtitle="Help travelers find the starting location!"
         />
-        <Counter
-          title="Guests"
-          subtitle="How many guests do you allow?"
-          value={guestCount}
-          onChange={(value) => setCustomValue("guestCount", value)}
-        />
-        <hr />
-        <Counter
-          title="Rooms"
-          subtitle="How many rooms do you have?"
-          value={roomCount}
-          onChange={(value) => setCustomValue("roomCount", value)}
-        />
-        <hr />
-        <Counter
-          title="Bathrooms"
-          subtitle="How many bathrooms do you have?"
-          value={bathroomCount}
-          onChange={(value) => setCustomValue("bathroomCount", value)}
+        <Meetup
+          id="meetingPoint"
+          label="Meetup Point Address"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
         />
       </div>
-    )
+    );
   }
 
-  // Step 4
+  // Step 4: Details
+  if (step === STEPS.DETAILS) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Share some details about your tour"
+          subtitle="Provide some key information"
+        />
+        <Counter
+          title="Price"
+          subtitle="The cost of the tour ($)"
+          value={price}
+          onChange={(value) => setCustomValue("price", value)}
+        />
+        <hr />
+        <Counter
+          title="Duration"
+          subtitle="How long the tour lasts (hours)"
+          value={duration}
+          onChange={(value) => setCustomValue("duration", value)}
+        />
+        <hr />
+        <Counter
+          title="Group Size"
+          subtitle="Maximum number of participants"
+          value={groupSize}
+          onChange={(value) => setCustomValue("groupSize", value)}
+        />
+      </div>
+    );
+  }
+
+  if (step === STEPS.INCLUSIONS) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="What is included in the tour?"
+          subtitle="Add all the inclusions for the travelers."
+        />
+        <Inclusions
+          inclusions={inclusions}
+          setInclusions={setInclusions}
+        />
+      </div>
+    );
+  }
+
+  // Step 6: Images
   if (step === STEPS.IMAGES) {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="Add a photo of your place"
-          subtitle="Show guests what your place looks like!"
+          title="Add a thumbnail image"
+          subtitle="Upload an image for your tour"
         />
         <ImageUpload
           value={imageSrc}
           onChange={(value) => setCustomValue("imageSrc", value)}
-
-        />
-      </div>
-    )
-  }
-
-  // Step 5
-  if (step === STEPS.DESCRIPTION) {
-    bodyContent = (
-      <div className="flex flex-col gap-8">
-        <Heading
-          title="How would you describe your place?"
-          subtitle="Short and sweet works best!"
-        />
-        <Input
-          id="title"
-          label="Title"
-          disabled={isLoading}
-          register={register}
-          errors={errors}
-          required
-        />
-        <hr />
-        <Input
-          id="description"
-          label="Description"
-          disabled={isLoading}
-          register={register}
-          errors={errors}
-          required
-        />
-      </div>
-    )
-  }
-
-  // Step 6 
-  if (step === STEPS.PRICE) {
-    bodyContent = (
-      <div className="flex flex-col gap-8">
-        <Heading
-          title="Now, set your price"
-          subtitle="How much do you charge per night?"
-        />
-        <Input
-          id="price"
-          label="Price"
-          formatPrice
-          type="number"
-          disabled={isLoading}
-          register={register}
-          errors={errors}
-          required
         />
       </div>
     )
@@ -272,11 +288,11 @@ const RentModal = () => {
       onSubmit={handleSubmit(onSubmit)}
       actionLabel={actionLabel}
       secondaryActionLabel={secondaryActionLabel}
-      secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
-      title="Airbnb your home!"
+      secondaryAction={step === STEPS.TITLE_DESCRIPTION ? undefined : onBack}
+      title="List Your Adventure!"
       body={bodyContent}
     />
   )
 }
 
-export default RentModal
+export default RentModal;

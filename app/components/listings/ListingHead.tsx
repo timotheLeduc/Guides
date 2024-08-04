@@ -1,6 +1,6 @@
 "use client"
 
-import useCountries from "@/app/hooks/useCountries";
+import useCities from "@/app/hooks/useCities";
 import { SafeUser } from "@/app/types";
 import { FC } from "react";
 import Heading from "../Heading";
@@ -17,7 +17,7 @@ interface ListingHeadProps {
 
 const ListingHead: FC<ListingHeadProps> = ({ title, locationValue, imageSrc, id, currentUser }) => {
 
-    const { getByValue } = useCountries();
+    const { getByValue } = useCities();
 
     const location = getByValue(locationValue);
 
@@ -25,7 +25,7 @@ const ListingHead: FC<ListingHeadProps> = ({ title, locationValue, imageSrc, id,
         <>
             <Heading
                 title={title}
-                subtitle={`${location?.region}, ${location?.label}`}
+                subtitle={`${location?.label}, ${location?.country}`}
             />
             <div className="w-full h-[60vh] overflow-hidden rounded-xl relative">
                 <Image

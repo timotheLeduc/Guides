@@ -4,6 +4,7 @@ import { FC, useCallback, useMemo } from "react"
 
 import { useRouter } from "next/navigation";
 import useCountries from "@/app/hooks/useCountries";
+import useCities from "@/app/hooks/useCities";
 
 import { SafeListing, SafeReservation, SafeUser } from "@/app/types";
 import { format } from "date-fns"
@@ -14,18 +15,26 @@ import Button from "../Button";
 interface ListingCardProps {
     data: SafeListing;
     reservation?: SafeReservation;
-    onAction?: (id: string) => void
+    onAction?: (id: string) => void;
     disabled?: boolean;
     actionLabel?: string;
     actionId?: string;
-    currentUser?: SafeUser | null
+    currentUser?: SafeUser | null;
 }
 
-const ListingCard: FC<ListingCardProps> = ({ data, reservation, onAction, disabled, actionLabel, actionId = "", currentUser }) => {
+const ListingCard: FC<ListingCardProps> = ({
+    data,
+    reservation,
+    onAction,
+    disabled,
+    actionLabel,
+    actionId = "",
+    currentUser
+}) => {
 
     const router = useRouter();
 
-    const { getByValue } = useCountries();
+    const { getByValue } = useCities();
 
     const location = getByValue(data.locationValue);
 
@@ -38,22 +47,21 @@ const ListingCard: FC<ListingCardProps> = ({ data, reservation, onAction, disabl
 
     }, [onAction, actionId, disabled]);
 
-
     const price = useMemo(() => {
         if (reservation) {
             return reservation.totalPrice;
         }
 
-        return data.price
+        return data.price;
     }, [reservation, data.price]);
 
     const reservationDate = useMemo(() => {
         if (!reservation) return null;
 
         const start = new Date(reservation.startDate);
-        const end = new Date(reservation.endDate)
+        const end = new Date(reservation.endDate);
 
-        return `${format(start, 'PP')} - ${format(end, "PP")}`
+        return `${format(start, 'PP')} - ${format(end, "PP")}`;
 
     }, [reservation]);
 
@@ -77,8 +85,11 @@ const ListingCard: FC<ListingCardProps> = ({ data, reservation, onAction, disabl
                         />
                     </div>
                 </div>
-                <div className="font-semibold text-lg">
-                    {location?.region}, {location?.label}
+                <div className="font-bold text-xl">
+                    {data.title}
+                </div>
+                <div className="font-semibold text-md text-neutral-500">
+                    {location?.label}, {location?.country}
                 </div>
                 <div className="font-light text-neutral-500">
                     {reservationDate || data.category}
@@ -88,7 +99,7 @@ const ListingCard: FC<ListingCardProps> = ({ data, reservation, onAction, disabl
                         $ {price}
                     </div>
                     {!reservation && (
-                        <div className="font-light">night</div>
+                        <div className="font-light">per person</div>
                     )}
                 </div>
                 {onAction && actionLabel && (
@@ -102,7 +113,7 @@ const ListingCard: FC<ListingCardProps> = ({ data, reservation, onAction, disabl
                 )}
             </div>
         </div>
-    )
+    );
 }
 
-export default ListingCard
+export default ListingCard;

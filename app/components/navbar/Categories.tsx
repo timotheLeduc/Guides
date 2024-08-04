@@ -1,100 +1,61 @@
 "use client"
 
 import { usePathname, useSearchParams } from 'next/navigation';
-import { TbBeach, TbMountain, TbPool } from 'react-icons/tb';
-import {
-    GiBarn,
-    GiBoatFishing,
-    GiCactus,
-    GiCastle,
-    GiCaveEntrance,
-    GiForestCamp,
-    GiIsland,
-    GiWindmill
-} from 'react-icons/gi';
-import { FaSkiing } from 'react-icons/fa';
-import { BsSnow } from 'react-icons/bs';
-import { IoDiamond } from 'react-icons/io5';
-import { MdOutlineVilla } from 'react-icons/md';
+import { FaCocktail, FaHiking, FaTheaterMasks, FaUtensils, FaSpa, FaRunning, FaShoppingBag, FaStar, FaTree, FaLandmark } from 'react-icons/fa';
 
 import Container from '../Container';
 import CategoryBox from '../CategoryBox';
 
 export const categories = [
     {
-        label: 'Beach',
-        icon: TbBeach,
-        description: 'This property is close to the beach!',
+        label: 'Bars and Nightlife',
+        icon: FaCocktail,
+        description: 'Discover the best bars and nightlife!',
     },
     {
-        label: 'Windmills',
-        icon: GiWindmill,
-        description: 'This property is has windmills!',
+        label: 'Exploration and Adventure',
+        icon: FaHiking,
+        description: 'Join exciting adventures and explorations!',
     },
     {
-        label: 'Modern',
-        icon: MdOutlineVilla,
-        description: 'This property is modern!'
+        label: 'Local Culture',
+        icon: FaTheaterMasks,
+        description: 'Explore local culture and arts!',
     },
     {
-        label: 'Countryside',
-        icon: TbMountain,
-        description: 'This property is in the countryside!'
+        label: 'Gastronomy',
+        icon: FaUtensils,
+        description: 'Taste delicious local cuisine!',
     },
     {
-        label: 'Pools',
-        icon: TbPool,
-        description: 'This is property has a beautiful pool!'
+        label: 'Wellness and Relaxation',
+        icon: FaSpa,
+        description: 'Enjoy moments of wellness and relaxation!',
     },
     {
-        label: 'Islands',
-        icon: GiIsland,
-        description: 'This property is on an island!'
+        label: 'Sports and Leisure',
+        icon: FaRunning,
+        description: 'Participate in sports and leisure activities!',
     },
     {
-        label: 'Lake',
-        icon: GiBoatFishing,
-        description: 'This property is near a lake!'
+        label: 'Shopping',
+        icon: FaShoppingBag,
+        description: 'Discover the best local shops and markets!',
     },
     {
-        label: 'Skiing',
-        icon: FaSkiing,
-        description: 'This property has skiing activies!'
+        label: 'Unique Experiences',
+        icon: FaStar,
+        description: 'Have unique and memorable experiences!',
     },
     {
-        label: 'Castles',
-        icon: GiCastle,
-        description: 'This property is an ancient castle!'
+        label: 'History and Education',
+        icon: FaLandmark,
+        description: 'Discover local history and culture!',
     },
     {
-        label: 'Caves',
-        icon: GiCaveEntrance,
-        description: 'This property is in a spooky cave!'
-    },
-    {
-        label: 'Camping',
-        icon: GiForestCamp,
-        description: 'This property offers camping activities!'
-    },
-    {
-        label: 'Arctic',
-        icon: BsSnow,
-        description: 'This property is in arctic environment!'
-    },
-    {
-        label: 'Desert',
-        icon: GiCactus,
-        description: 'This property is in the desert!'
-    },
-    {
-        label: 'Barns',
-        icon: GiBarn,
-        description: 'This property is in a barn!'
-    },
-    {
-        label: 'Lux',
-        icon: IoDiamond,
-        description: 'This property is brand new and luxurious!'
+        label: 'Nature and Wildlife',
+        icon: FaTree,
+        description: 'Explore nature and observe local wildlife!',
     }
 ]
 
@@ -112,13 +73,13 @@ const Categories = () => {
         <Container>
             <div
                 className="
-            pt-4
-            flex 
-            flex-row 
-            items-center 
-            justify-between
-            overflow-x-auto
-          "
+                    pt-4
+                    flex 
+                    flex-row 
+                    items-center 
+                    justify-between
+                    overflow-x-auto
+                "
             >
                 {categories.map((item) => (
                     <CategoryBox

@@ -24,6 +24,13 @@ const Counter: FC<CounterProps> = ({ title, subtitle, value, onChange }) => {
         onChange(value - 1);
     }, [value, onChange]);
 
+    const onManualChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = parseInt(event.target.value, 10);
+        if (!isNaN(newValue)) {
+            onChange(newValue);
+        }
+    };
+
     return (
         <div className="flex flex-row items-center justify-between">
             <div className="flex flex-col">
@@ -41,9 +48,14 @@ const Counter: FC<CounterProps> = ({ title, subtitle, value, onChange }) => {
                 >
                     <AiOutlineMinus />
                 </div>
-                <div className="font-light text-xl text-neutral-600">
-                    {value}
-                </div>
+                <input
+                    type="number"
+                    className="w-16 text-center text-xl font-light text-neutral-600"
+                    value={value}
+                    onChange={onManualChange}
+                    onFocus={(event) => event.target.select()}
+                    min="1"
+                />
                 <div
                     onClick={onAdd}
                     className="w-10 h-10 rounded-full border-[1px] border-neutral-400 flex items-center justify-center text-neutral-600 cursor-pointer hover:opacity-80 transition"
@@ -55,4 +67,4 @@ const Counter: FC<CounterProps> = ({ title, subtitle, value, onChange }) => {
     )
 }
 
-export default Counter
+export default Counter;

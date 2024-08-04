@@ -3,17 +3,15 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { FC, useCallback } from "react";
 import { IconType } from "react-icons";
-import qs from 'query-string'
+import qs from 'query-string';
 
 interface CategoryBoxProps {
-    icon: IconType,
+    icon: IconType;
     label: string;
     selected?: boolean;
 }
 
-
 const CategoryBox: FC<CategoryBoxProps> = ({ icon: Icon, label, selected }) => {
-
     const router = useRouter();
     const params = useSearchParams();
 
@@ -24,48 +22,48 @@ const CategoryBox: FC<CategoryBoxProps> = ({ icon: Icon, label, selected }) => {
             currentQuery = qs.parse(params.toString());
         }
 
-        const udpatedQuery: any = {
+        const updatedQuery: any = {
             ...currentQuery,
             category: label
-        }
+        };
 
         // If click same category, that category will remove
         if (params?.get("category") === label) {
-            delete udpatedQuery.category;
+            delete updatedQuery.category;
         }
 
         const url = qs.stringifyUrl({
             url: "/",
-            query: udpatedQuery
+            query: updatedQuery
         }, { skipNull: true });
 
         router.push(url);
-
     }, [label, params, router]);
 
     return (
         <div
             onClick={handleClick}
             className={`
-          flex 
-          flex-col 
-          items-center 
-          justify-center 
-          gap-2
-          p-3
-          border-b-2
-          hover:text-neutral-800
-          transition
-          cursor-pointer
-          ${selected ? 'border-b-neutral-800 text-neutral-800' : 'border-transparent text-neutral-500'}
-        `}
+                flex 
+                flex-col 
+                items-center 
+                justify-center 
+                gap-2
+                p-3
+                border-b-2
+                hover:text-neutral-800
+                transition
+                cursor-pointer
+                ${selected ? 'border-b-neutral-800 text-neutral-800' : 'border-transparent text-neutral-500'}
+                whitespace-nowrap
+            `}
         >
             <Icon size={26} />
-            <div className="font-medium text-sm">
+            <div className="font-medium text-sm text-center">
                 {label}
             </div>
         </div>
-    )
+    );
 }
 
-export default CategoryBox
+export default CategoryBox;
